@@ -3,6 +3,9 @@ import board
 import adafruit_tsl2591
 import adafruit_ahtx0
 
+# Open the file with the date as its name in append mode to avoid overwriting data
+file_path = "/media/pi/BEAMdrive/" + open("Node_ID.txt").read().strip() + "_" + datetime.datetime.now().strftime("%m-%d-%y") + ".json"
+
 # Set up I2C
 i2c = board.I2C()
 
@@ -10,25 +13,33 @@ i2c = board.I2C()
 light_sensor = adafruit_tsl2591.TSL2591(i2c)
 temp_humidity_sensor = adafruit_ahtx0.AHTx0(i2c)
 
-# Main loop
-while True:
-    # TSL2591 - Light sensor
+
+# TSL2591 - Light sensor
+try:
     lux = light_sensor.lux
     infrared = light_sensor.infrared
     visible = light_sensor.visible
     full_spectrum = light_sensor.full_spectrum
+except Exception as e:
+    print(f"Error reading from TSL2561: {e}")
 
-    print("\nLight Sensor Readings:")
-    print("  Total light: {:.2f} lux".format(lux))
-    print("  Infrared light: {}".format(infrared))
-    print("  Visible light: {}".format(visible))
-    print("  Full spectrum (IR + visible): {}".format(full_spectrum))
 
-    # AHT20 - Temp & humidity sensor
+# AHT20 - Temp & humidity sensor
+try:
     temperature = temp_humidity_sensor.temperature
     humidity = temp_humidity_sensor.relative_humidity
+except Exception as e:
+    print(f"Error reading from AHT20: {e}")
 
-    print("Temperature: {:.1f}°C".format(temperature))
-    print("Humidity: {:.1f}%".format(humidity))
-
-    time.sleep(2)
+# Write the data to the file with automatic closure
+with open(file_path, "a") as file:
+    file.write("{\n")
+    file.write("\t\"time\": \"" + datetime.datetime.now().strftime("%H:%M:%S") + "\",\n")
+    file.write("\t\"temperature\": %0.1f" % temperature + ",\n")
+    file.write("\t\"humidity\": %0.1f" % humidity + ",\n")
+    
+    file.write("\t\"lux\": {}".format(lux) + ",\n")
+    file.write("\t\"visible\": {}".format(vis) + ",\n")
+    file.write("\t\"infrared\": {}".format(ir) + "\n")
+    file.write("\t\"full-spectrum\": {}".format(full_spec) + "\n")
+    file.write("}\n")
