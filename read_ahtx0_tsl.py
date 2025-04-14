@@ -10,22 +10,32 @@ file_path = "/media/pi/BEAMdrive/" + open("Node_ID.txt").read().strip() + "_" + 
 # Set up I2C
 i2c = board.I2C()
 
+# Declare light sensing variables
+lux = -1.0
+ir = -1.0
+vis = -1.0
+full_spec = -1.0
+
+# Declare environmental sensing variables
+temp = -1.0
+hum = -1.0
+
 # TSL2591 - Light sensor
 try:
     light_sensor = adafruit_tsl2591.TSL2591(i2c)
-    lux = sensor.lux
-    ir = sensor.infrared
-    vis = sensor.visible
-    full_spec = sensor.full_spectrum
+    lux = light_sensor.lux
+    ir = light_sensor.infrared
+    vis = light_sensor.visible
+    full_spec = light_sensor.full_spectrum
 except Exception as e:
-    print(f"Error reading from TSL2561: {e}")
+    print(f"Error reading from TSL2591: {e}")
 
 
 # AHT20 - Temp & humidity sensor
 try:
     temp_humidity_sensor = adafruit_ahtx0.AHTx0(i2c)
-    temperature = temp_humidity_sensor.temperature
-    humidity = temp_humidity_sensor.relative_humidity
+    temp = temp_humidity_sensor.temperature
+    hum = temp_humidity_sensor.relative_humidity
 except Exception as e:
     print(f"Error reading from AHT20: {e}")
 
@@ -33,8 +43,8 @@ except Exception as e:
 with open(file_path, "a") as file:
     file.write("{\n")
     file.write("\t\"time\": \"" + datetime.datetime.now().strftime("%H:%M:%S") + "\",\n")
-    file.write("\t\"temperature\": %0.1f" % temperature + ",\n")
-    file.write("\t\"humidity\": %0.1f" % humidity + ",\n")
+    file.write("\t\"temperature\": %0.1f" % temp + ",\n")
+    file.write("\t\"humidity\": %0.1f" % hum + ",\n")
     
     file.write("\t\"lux\": {}".format(lux) + ",\n")
     file.write("\t\"visible\": {}".format(vis) + ",\n")
