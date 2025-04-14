@@ -1,28 +1,24 @@
-# Environmental and Light Sensor Logger for Raspberry Pi
+# Raspberry Pi Environmental and Audio Logger
 
-This script reads data from two I²C sensors — the Adafruit TSL2591 (lux/light) and AHT20 (temperature/humidity) — and logs the readings to a JSON file on an external USB drive.
+This project logs environmental sensor data and records audio using a Raspberry Pi. All data is saved to a USB drive mounted at `/media/pi/BEAMdrive`.
 
-## Features
+## Files
 
-- Reads:
-  - Ambient temperature and humidity using the **AHT20**
-  - Light intensity, infrared, and visible light using the **TSL2591**
-- Appends sensor readings as JSON entries to a date-stamped file
-- Automatically includes device identity from a `Node_ID.txt` file
-- Designed to run on Raspberry Pi (tested on Pi Zero)
+- **Node_ID.txt**  
+  Contains a unique ID for the device. Used to name the JSON data file.
 
-## Hardware Required
+- **read_ahtx0_tsl.py**  
+  Reads data from the AHT20 (temperature, humidity) and TSL2591 (light) sensors. Appends readings to a JSON file on the USB drive.
 
-- Raspberry Pi (e.g., Pi Zero, Pi 4)
-- Adafruit **TSL2591** High Dynamic Range Digital Light Sensor
-- Adafruit **AHT20** Temperature and Humidity Sensor
-- External USB drive mounted at `/media/pi/BEAMdrive`
-- A `Node_ID.txt` file in the working directory containing the device ID
+- **record.py**  
+  Records 5 minutes of audio from a connected microphone and saves it as a `.wav` file on the USB drive.
 
-##  Libraries Required
+## Requirements
 
-Install the following CircuitPython libraries via `pip`:
+Install required libraries:
 
 ```bash
-sudo pip install adafruit-circuitpython-tsl2591 --break-system-packages
 sudo pip install adafruit-circuitpython-ahtx0 --break-system-packages
+sudo pip install adafruit-circuitpython-tsl2591 --break-system-packages
+sudo pip install pyaudio --break-system-packages
+sudo apt install portaudio19-dev python3-pyaudio
