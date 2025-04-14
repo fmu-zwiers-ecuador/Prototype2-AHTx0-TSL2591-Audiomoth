@@ -10,23 +10,20 @@ file_path = "/media/pi/BEAMdrive/" + open("Node_ID.txt").read().strip() + "_" + 
 # Set up I2C
 i2c = board.I2C()
 
-# Initialize sensors
-light_sensor = adafruit_tsl2591.TSL2591(i2c)
-temp_humidity_sensor = adafruit_ahtx0.AHTx0(i2c)
-
-
 # TSL2591 - Light sensor
 try:
-    lux = light_sensor.lux
-    infrared = light_sensor.infrared
-    visible = light_sensor.visible
-    full_spectrum = light_sensor.full_spectrum
+    light_sensor = adafruit_tsl2591.TSL2591(i2c)
+    lux = sensor.lux
+    ir = sensor.infrared
+    vis = sensor.visible
+    full_spec = sensor.full_spectrum
 except Exception as e:
     print(f"Error reading from TSL2561: {e}")
 
 
 # AHT20 - Temp & humidity sensor
 try:
+    temp_humidity_sensor = adafruit_ahtx0.AHTx0(i2c)
     temperature = temp_humidity_sensor.temperature
     humidity = temp_humidity_sensor.relative_humidity
 except Exception as e:
