@@ -1,4 +1,4 @@
-# Raspberry Pi Environmental and Audio Logger
+# Prototype 2
 
 This project logs environmental sensor data and records audio using a Raspberry Pi. All data is saved to a USB drive mounted at `/media/pi/BEAMdrive`.
 
@@ -20,5 +20,6 @@ Install required libraries:
 ```bash
 sudo pip install adafruit-circuitpython-ahtx0 --break-system-packages
 sudo pip install adafruit-circuitpython-tsl2591 --break-system-packages
+sudo pip3 install adafruit-blinka --break-system-packages
 sudo pip install pyaudio --break-system-packages
 sudo apt install portaudio19-dev python3-pyaudio
